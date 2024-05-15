@@ -434,8 +434,8 @@ struct unsafe_default_initialized_cv {
 #if __cpp_lib_is_constant_evaluated >= 201811L
 #if !defined(__MSVC_RUNTIME_CHECKS)
     if (!std::is_constant_evaluated()) {
-      T uninit;
-      return uninit;
+      alignas(T) char uninit[sizeof(T)];
+      return *reinterpret_cast<T*>(uninit);
     }
 #endif // !defined(__MSVC_RUNTIME_CHECKS)
 #endif
