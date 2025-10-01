@@ -41,8 +41,9 @@ find_package(Boost 1.51.0 MODULE
     filesystem
     program_options
     regex
-    system
     thread
+  OPTIONAL_COMPONENTS
+    system
   REQUIRED
 )
 list(APPEND FOLLY_LINK_LIBRARIES ${Boost_LIBRARIES})
