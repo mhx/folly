@@ -121,7 +121,11 @@ static constexpr uint64_t __gxx_dependent_exception_class =
 struct __cxa_exception {
   std::type_info* exceptionType;
   void(_GLIBCXX_CDTOR_CALLABI* exceptionDestructor)(void*);
+#if __cplusplus < 201703L
   std::unexpected_handler unexpectedHandler;
+#else
+  void (*unexpectedHandler)();
+#endif
   std::terminate_handler terminateHandler;
   __cxa_exception* nextException;
   int handlerCount;
@@ -795,7 +799,7 @@ std::exception_ptr make_exception_ptr_with_(
   });
 #else
   cxxabi_with_cxa_exception(object, [&](auto exception) {
-#if defined(__FreeBSD__)
+#if defined(__FreeBSD__) || __cplusplus >= 201703L
     exception->unexpectedHandler = nullptr;
 #else
     exception->unexpectedHandler = std::get_unexpected();
