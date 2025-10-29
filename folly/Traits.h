@@ -627,9 +627,22 @@ inline constexpr bool is_detected_v =
 template <template <typename...> class T, typename... A>
 struct is_detected : detected_or<nonesuch, T, A...>::value_t {};
 
+namespace detail {
+#if __cplusplus >= 202302L
+template <std::size_t Len, std::size_t Align>
+struct aligned_storage {
+  struct type {
+    alignas(Align) std::byte data[Len];
+  };
+};
+#else
+using std::aligned_storage;
+#endif
+} // namespace detail
+
 template <typename T>
 using aligned_storage_for_t =
-    typename std::aligned_storage<sizeof(T), alignof(T)>::type;
+    typename detail::aligned_storage<sizeof(T), alignof(T)>::type;
 
 //  ----
 
